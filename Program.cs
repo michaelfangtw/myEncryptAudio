@@ -19,15 +19,33 @@ string decryptedFile = @"d:\temp\vm-cht.mp3.decrypt.mp3";
 // Encrypt the audio file
 Console.WriteLine("encrypt input:"+ inputFile);
 Console.WriteLine("encrypt outputFile:" + encryptedFile);
-EncryptAudio(inputFile, encryptedFile, encryptionKey, initializationVector);
+EncryptFile(inputFile, encryptedFile, encryptionKey, initializationVector);
 
 // Decrypt the encrypted audio file
-DecryptAudio(encryptedFile, decryptedFile, encryptionKey, initializationVector);
+EncryptFile(encryptedFile, decryptedFile, encryptionKey, initializationVector);
 Console.WriteLine("decrypt input:" + encryptedFile);
 Console.WriteLine("decrypt outputFile:" + decryptedFile);
+Console.WriteLine("===============================");
+
+string inputTextFile = @"d:\temp\vm-cht.txt";
+string encryptedTextFile = @"d:\temp\vm-cht.txt.enc";
+string decryptedTextFile = @"d:\temp\vm-cht.decrypt.txt";
+
+// Encrypt the audio file
+Console.WriteLine("encrypt input:"+ inputTextFile);
+Console.WriteLine("encrypt outputFile:" + encryptedTextFile);
+EncryptFile(inputTextFile, encryptedTextFile, encryptionKey, initializationVector);
+
+// Decrypt the encrypted audio file
+DecryptFile(encryptedTextFile, decryptedTextFile, encryptionKey, initializationVector);
+Console.WriteLine("decrypt input:" + encryptedTextFile);
+Console.WriteLine("decrypt outputFile:" + decryptedTextFile);
 
 
-static void EncryptAudio(string inputFile, string outputFile, byte[] key, byte[] iv)
+
+
+
+static void EncryptFile(string inputFile, string outputFile, byte[] key, byte[] iv)
 {
     using (var aes = Aes.Create("AesManaged"))
     {
@@ -51,7 +69,7 @@ static void EncryptAudio(string inputFile, string outputFile, byte[] key, byte[]
     }
 }
 
-static void DecryptAudio(string inputFile, string outputFile, byte[] key, byte[] iv)
+static void DecryptFile(string inputFile, string outputFile, byte[] key, byte[] iv)
 {
     using (var aes = Aes.Create("AesManaged"))
     {
