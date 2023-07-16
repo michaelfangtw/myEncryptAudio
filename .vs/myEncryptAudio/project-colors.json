@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "92eaf315-0a02-415d-b73e-826f5015323b": {
+      "ProjectGuid": "92eaf315-0a02-415d-b73e-826f5015323b",
+      "DisplayName": "myEncryptAudio",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}
