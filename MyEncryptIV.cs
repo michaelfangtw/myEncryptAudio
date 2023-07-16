@@ -2,19 +2,18 @@
 using System.IO;
 using System.Security.Cryptography;
 
-class Program
+class MyEncryptIV
 {
-    static void Main()
+    public MyEncryptIV()
     {
         string inputFile = @"d:\temp\vm-cht.mp3"; // Replace with your input audio file path
         string encryptedFile = @"d:\temp\vm-cht.mp3.enc"; // Encrypted output file path
         string decryptedFile = @"d:\temp\vm-cht.decrypt.mp3"; // Decrypted output file path
         string key = "123456789012345678901234567890AB"; // Replace this with your own encryption key (must be 16, 24, or 32 bytes)
-        //string iv=  "1234567890123456";//16 
-        
+        string iv = "1234567890123456";//16 
 
-        EncryptFile(inputFile, encryptedFile, key);
-        DecryptFile(encryptedFile, decryptedFile, key);
+        EncryptFile(inputFile, encryptedFile, key, iv);
+        DecryptFile(encryptedFile, decryptedFile, key, iv);
 
         Console.WriteLine("input file:" + inputFile);
         Console.WriteLine("encryptedFile file:" + encryptedFile);
@@ -26,9 +25,9 @@ class Program
         string encryptedTextFile = @"d:\temp\vm-cht.txt.env"; // Encrypted output file path
         string decryptedTextFile = @"d:\temp\vm-cht.decrypt.txt"; // Decrypted output file path
         string txtKey = "123456789012345678901234567890AB"; // Replace this with your own encryption key (must be 16, 24, or 32 bytes)
-        //string textIV = "1234567890123456";
-        EncryptFile(inputTextFile, encryptedTextFile, txtKey );
-        DecryptFile(encryptedTextFile, decryptedTextFile, txtKey);
+        string textIV = "1234567890123456";
+        EncryptFile(inputTextFile, encryptedTextFile, txtKey, textIV);
+        DecryptFile(encryptedTextFile, decryptedTextFile, txtKey, textIV);
 
 
         Console.WriteLine("input text file:" + inputTextFile);
@@ -40,17 +39,13 @@ class Program
 
     }
 
-    static void EncryptFile(string inputFile, string outputFile, string key)
+    static void EncryptFile(string inputFile, string outputFile, string key, string iv)
     {
         using (Aes aes = Aes.Create())
         {
             aes.Key = System.Text.Encoding.UTF8.GetBytes(key);
-            //iv version
-            //aes.IV= System.Text.Encoding.UTF8.GetBytes(iv);
-            //no iv version
-            aes.GenerateIV();
-            //aes.IV= System.Text.Encoding.UTF8.GetBytes(iv);
-            Console.WriteLine("GenerateIV=" + System.Text.Encoding.UTF8.GetString(aes.IV));
+            aes.IV = System.Text.Encoding.UTF8.GetBytes(iv);
+            //aes.GenerateIV();
 
             using (FileStream input = new FileStream(inputFile, FileMode.Open))
             using (FileStream output = new FileStream(outputFile, FileMode.Create))
@@ -65,24 +60,21 @@ class Program
         }
     }
 
-    static void DecryptFile(string inputFile, string outputFile, string key)
+    static void DecryptFile(string inputFile, string outputFile, string key, string iv)
     {
         using (Aes aes = Aes.Create())
         {
             aes.Key = System.Text.Encoding.UTF8.GetBytes(key);
-            //iv version
-            //aes.IV = System.Text.Encoding.UTF8.GetBytes(IV);
-            //not iv ,get iv from input file
-            
-            byte[] iv = new byte[aes.IV.Length];
+            aes.IV = System.Text.Encoding.UTF8.GetBytes(iv);
+            //byte[] iv = new byte[aes.IV.Length];
 
             using (FileStream input = new FileStream(inputFile, FileMode.Open))
             using (FileStream output = new FileStream(outputFile, FileMode.Create))
             {
                 // Read the IV from the input file
-                input.Read(iv, 0, iv.Length);
-                aes.IV = iv;
-                Console.WriteLine("input.GenerateIV=" + System.Text.Encoding.UTF8.GetString(aes.IV));
+                //input.Read(aes.IV, 0, iv.Length);
+                //aes.IV = iv;
+
                 using (CryptoStream cryptoStream = new CryptoStream(input, aes.CreateDecryptor(), CryptoStreamMode.Read))
                 {
                     // Decrypt the audio file
