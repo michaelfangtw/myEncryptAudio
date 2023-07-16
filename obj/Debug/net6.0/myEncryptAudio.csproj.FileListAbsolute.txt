@@ -4,7 +4,6 @@ D:\www\__Labs\myEncryptAudio\bin\Debug\net6.0\myEncryptAudio.runtimeconfig.json
 D:\www\__Labs\myEncryptAudio\bin\Debug\net6.0\myEncryptAudio.dll
 D:\www\__Labs\myEncryptAudio\bin\Debug\net6.0\ref\myEncryptAudio.dll
 D:\www\__Labs\myEncryptAudio\bin\Debug\net6.0\myEncryptAudio.pdb
-D:\www\__Labs\myEncryptAudio\obj\Debug\net6.0\myEncryptAudio.csproj.AssemblyReference.cache
 D:\www\__Labs\myEncryptAudio\obj\Debug\net6.0\myEncryptAudio.GeneratedMSBuildEditorConfig.editorconfig
 D:\www\__Labs\myEncryptAudio\obj\Debug\net6.0\myEncryptAudio.AssemblyInfoInputs.cache
 D:\www\__Labs\myEncryptAudio\obj\Debug\net6.0\myEncryptAudio.AssemblyInfo.cs
@@ -13,3 +12,4 @@ D:\www\__Labs\myEncryptAudio\obj\Debug\net6.0\myEncryptAudio.dll
 D:\www\__Labs\myEncryptAudio\obj\Debug\net6.0\ref\myEncryptAudio.dll
 D:\www\__Labs\myEncryptAudio\obj\Debug\net6.0\myEncryptAudio.pdb
 D:\www\__Labs\myEncryptAudio\obj\Debug\net6.0\myEncryptAudio.genruntimeconfig.cache
+D:\www\__Labs\myEncryptAudio\obj\Debug\net6.0\myEncryptAudio.csproj.AssemblyReference.cache

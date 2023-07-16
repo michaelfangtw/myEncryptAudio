@@ -1,93 +1,84 @@
 ﻿using System;
 using System.IO;
 using System.Security.Cryptography;
-using System.Text;
 
-
-//byte[] encryptionKey = new byte[32]; // Replace this with your encryption key
-//byte[] initializationVector = new byte[16]; // Replace this with your IV
-
-//長度:32  ==>1234567890123456789012
-byte[] encryptionKey = System.Text.Encoding.UTF8.GetBytes("123456789012345678901234567890AB"); //32
-//長度:16  ==>1234567890123456
-byte[] initializationVector = System.Text.Encoding.UTF8.GetBytes("1234567890123456");//16 
-
-string inputFile = @"d:\temp\vm-cht.mp3";
-string encryptedFile = @"d:\temp\vm-cht.mp3.enc";
-string decryptedFile = @"d:\temp\vm-cht.mp3.decrypt.mp3";
-
-// Encrypt the audio file
-Console.WriteLine("encrypt input:"+ inputFile);
-Console.WriteLine("encrypt outputFile:" + encryptedFile);
-EncryptFile(inputFile, encryptedFile, encryptionKey, initializationVector);
-
-// Decrypt the encrypted audio file
-EncryptFile(encryptedFile, decryptedFile, encryptionKey, initializationVector);
-Console.WriteLine("decrypt input:" + encryptedFile);
-Console.WriteLine("decrypt outputFile:" + decryptedFile);
-Console.WriteLine("===============================");
-
-string inputTextFile = @"d:\temp\vm-cht.txt";
-string encryptedTextFile = @"d:\temp\vm-cht.txt.enc";
-string decryptedTextFile = @"d:\temp\vm-cht.decrypt.txt";
-
-// Encrypt the audio file
-Console.WriteLine("encrypt input:"+ inputTextFile);
-Console.WriteLine("encrypt outputFile:" + encryptedTextFile);
-EncryptFile(inputTextFile, encryptedTextFile, encryptionKey, initializationVector);
-
-// Decrypt the encrypted audio file
-DecryptFile(encryptedTextFile, decryptedTextFile, encryptionKey, initializationVector);
-Console.WriteLine("decrypt input:" + encryptedTextFile);
-Console.WriteLine("decrypt outputFile:" + decryptedTextFile);
-
-
-
-
-
-static void EncryptFile(string inputFile, string outputFile, byte[] key, byte[] iv)
+class Program
 {
-    using (var aes = Aes.Create("AesManaged"))
+    static void Main()
     {
-        if (aes == null) return;
-        aes.Key = key;
-        aes.IV = iv;
+        string inputFile = @"d:\temp\vm-cht.mp3"; // Replace with your input audio file path
+        string encryptedFile = @"d:\temp\vm-cht.mp3.enc"; // Encrypted output file path
+        string decryptedFile = @"d:\temp\vm-cht.decrypt.mp3"; // Decrypted output file path
+        string key = "123456789012345678901234567890AB"; // Replace this with your own encryption key (must be 16, 24, or 32 bytes)
 
-        using (FileStream inputFileStream = new FileStream(inputFile, FileMode.Open, FileAccess.Read))
-        using (FileStream outputFileStream = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
-        using (CryptoStream cryptoStream = new CryptoStream(outputFileStream, aes.CreateEncryptor(), CryptoStreamMode.Write))
+        EncryptFile(inputFile, encryptedFile, key);
+        DecryptFile(encryptedFile, decryptedFile, key);
+
+        Console.WriteLine("input file:" + inputFile);
+        Console.WriteLine("encryptedFile file:" + encryptedFile);
+        Console.WriteLine("decryptedFile file:" + decryptedFile);
+        Console.WriteLine("mp3 Encryption and Decryption completed successfully!");
+        Console.WriteLine("==========================");
+
+        string inputTextFile = @"d:\temp\vm-cht.txt"; // Replace with your input audio file path
+        string encryptedTextFile = @"d:\temp\vm-cht.txt.env"; // Encrypted output file path
+        string decryptedTextFile = @"d:\temp\vm-cht.decrypt.txt"; // Decrypted output file path
+        string txtKey = "123456789012345678901234567890AB"; // Replace this with your own encryption key (must be 16, 24, or 32 bytes)
+
+        EncryptFile(inputTextFile, encryptedTextFile, txtKey);
+        DecryptFile(encryptedTextFile, decryptedTextFile, txtKey);
+
+
+        Console.WriteLine("input text file:" + inputTextFile);
+        Console.WriteLine("encryptedFile text file:" + encryptedTextFile);
+        Console.WriteLine("decryptedFile text file:" + decryptedTextFile);
+        Console.WriteLine("text Encryption and Decryption completed successfully!");
+        Console.WriteLine("==========================");
+
+
+    }
+
+    static void EncryptFile(string inputFile, string outputFile, string key)
+    {
+        using (Aes aes = Aes.Create())
         {
-            int bufferSize = 4096;
-            byte[] buffer = new byte[bufferSize];
-            int bytesRead;
+            aes.Key = System.Text.Encoding.UTF8.GetBytes(key);
+            aes.GenerateIV();
 
-            while ((bytesRead = inputFileStream.Read(buffer, 0, bufferSize)) > 0)
+            using (FileStream input = new FileStream(inputFile, FileMode.Open))
+            using (FileStream output = new FileStream(outputFile, FileMode.Create))
+            using (CryptoStream cryptoStream = new CryptoStream(output, aes.CreateEncryptor(), CryptoStreamMode.Write))
             {
-                cryptoStream.Write(buffer, 0, bytesRead);
+                // Write the IV to the output file
+                output.Write(aes.IV, 0, aes.IV.Length);
+
+                // Encrypt the audio file
+                input.CopyTo(cryptoStream);
             }
         }
     }
-}
 
-static void DecryptFile(string inputFile, string outputFile, byte[] key, byte[] iv)
-{
-    using (var aes = Aes.Create("AesManaged"))
+    static void DecryptFile(string inputFile, string outputFile, string key)
     {
-        if (aes == null) return;
-        aes.Key = key;
-        aes.IV = iv;
-
-        using (FileStream inputFileStream = new FileStream(inputFile, FileMode.Open, FileAccess.Read))
-        using (FileStream outputFileStream = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
-        using (CryptoStream cryptoStream = new CryptoStream(inputFileStream, aes.CreateDecryptor(), CryptoStreamMode.Read))
+        using (Aes aes = Aes.Create())
         {
-            int bufferSize = 4096;
-            byte[] buffer = new byte[bufferSize];
-            int bytesRead;
+            aes.Key = System.Text.Encoding.UTF8.GetBytes(key);
 
-            while ((bytesRead = cryptoStream.Read(buffer, 0, bufferSize)) > 0)
+            byte[] iv = new byte[aes.IV.Length];
+
+            using (FileStream input = new FileStream(inputFile, FileMode.Open))
+            using (FileStream output = new FileStream(outputFile, FileMode.Create))
             {
-                outputFileStream.Write(buffer, 0, bytesRead);
+                // Read the IV from the input file
+                input.Read(iv, 0, iv.Length);
+
+                aes.IV = iv;
+
+                using (CryptoStream cryptoStream = new CryptoStream(input, aes.CreateDecryptor(), CryptoStreamMode.Read))
+                {
+                    // Decrypt the audio file
+                    cryptoStream.CopyTo(output);
+                }
             }
         }
     }
